@@ -21,8 +21,12 @@ module Capybara
       sleep 0.1
 
       # Open select2 field
-      container = select2_container.find(".select2-choice, .select2-choices")
-      container.trigger('click')
+      container = select2_container.find(".select2-choice, .select2-choices", visible: false)
+      if Capybara.current_driver == 'poltergeist'
+        container.trigger('click')
+      else
+        container.click
+      end
 
       if options.has_key? :search
         find(:xpath, "//body").find(".select2-search input.select2-search__field").set(value)
@@ -42,7 +46,11 @@ module Capybara
           # would happen before select2 is initialized, hence
           # the dropdown wouldn't actually be opened; retry both operations
           container = select2_container.find(".select2-choice, .select2-choices")
-          container.trigger('click')
+          if Capybara.current_driver == 'poltergeist'
+            container.trigger('click')
+          else
+            container.click
+          end
           find(:xpath, "//body").find("#{drop_container} li.select2-result-selectable", text: value).click
         end
       end
