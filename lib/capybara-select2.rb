@@ -21,7 +21,7 @@ module Capybara
       sleep 0.1
 
       # Open select2 field
-      container = select2_container.find(".select2-choice, .select2-choices", visible: false)
+      container = select2_container.find(".select2-selection, .select2-choices", visible: false)
       if Capybara.current_driver == 'poltergeist'
         container.trigger('click')
       else
@@ -31,27 +31,27 @@ module Capybara
       if options.has_key? :search
         find(:xpath, "//body").find(".select2-search input.select2-search__field").set(value)
         page.execute_script(%|$("input.select2-search__field:visible").keyup();|)
-        drop_container = ".select2-results"
+        drop_container = ".select2-results__options"
       else
-        drop_container = ".select2-drop"
+        drop_container = ".select2-results__options"
       end
 
       sleep options[:sleep] if options.has_key? :sleep
 
       [value].flatten.each do |value|
         begin
-          find(:xpath, "//body").find("#{drop_container} li.select2-result-selectable", text: value).click
+          find(:xpath, "//body").find("#{drop_container} li.select2-results__option", text: value).click
         rescue Capybara::ElementNotFound
           # it seems that sometimes the "open select2 field" click
           # would happen before select2 is initialized, hence
           # the dropdown wouldn't actually be opened; retry both operations
-          container = select2_container.find(".select2-choice, .select2-choices")
+          container = select2_container.find(".select2-selection, .select2-choices")
           if Capybara.current_driver == 'poltergeist'
             container.trigger('click')
           else
             container.click
           end
-          find(:xpath, "//body").find("#{drop_container} li.select2-result-selectable", text: value).click
+          find(:xpath, "//body").find("#{drop_container} li.select2-results__option", text: value).click
         end
       end
     end
