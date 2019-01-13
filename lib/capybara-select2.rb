@@ -30,7 +30,7 @@ module Capybara
 
       if options.has_key? :search
         find(:xpath, "//body").find(".select2-container--open .select2-search input.select2-search__field").set(value)
-        page.execute_script(%|$("input.select2-search__field:visible").keyup();|)
+        page.execute_script(%|$(".select2-container--open input.select2-search__field:visible").keyup();|)
         drop_container = ".select2-results__options"
       else
         drop_container = ".select2-results__options"
